@@ -109,7 +109,7 @@ namespace ReceivingApp
                 return;
             }
 
-            if (cmbUser.SelectedIndex<0)
+            if (cmbUser.SelectedIndex<0 && radEdit.Checked!=true)
             {
                 MessageBox.Show("Please select a User.");
                 return;
@@ -173,7 +173,7 @@ namespace ReceivingApp
 
 
 
-            if (radIncoming.Checked == true) {
+            if (radIncoming.Checked == true||radEdit.Checked==true) {
                 string outputfile = "";
 
                 if (chkLoaner.Checked == false) {
@@ -202,8 +202,15 @@ namespace ReceivingApp
                     letter.ReplaceText("#loaner#", "");
                 }
 
-                letter.ReplaceText("#date#", DateTime.Now.ToString("MMMM dd yyyy, HH:mm"));
+                if (radIncoming.Checked == true)
+                {
+                    letter.ReplaceText("#date#", DateTime.Now.ToString("MMMM dd yyyy, HH:mm"));
+                }else if (radEdit.Checked == true)
+                {
+                    letter.ReplaceText("#date#", "Last edited: "+DateTime.Now.ToString("MMMM dd yyyy, HH:mm"));
+                }
 
+                
                 if (radDamaged.Checked == true)
                 {
                     letter.ReplaceText("#damage#", "Damaged");
@@ -621,67 +628,73 @@ namespace ReceivingApp
 
         }
 
+        private void PopulateProduct()
+        {
+
+            if (txtSerial.Text.Length > 2)
+            {
+                if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AB")
+                {
+                    txtProduct.Text = "E-SERIES";
+                    return;
+                }
+
+                if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AR")
+                {
+                    txtProduct.Text = "X-SERIES";
+                    return;
+                }
+
+                if (txtSerial.Text[0].ToString() == "T")
+                {
+                    txtProduct.Text = "M-SERIES";
+                    return;
+                }
+
+                if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AF")
+                {
+                    txtProduct.Text = "R-SERIES";
+                    return;
+                }
+
+                if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AA")
+                {
+                    txtProduct.Text = "AED-PRO";
+                    return;
+                }
+
+                if (txtSerial.Text[0].ToString() == "X")
+                {
+                    txtProduct.Text = "AED-PLUS";
+                    return;
+                }
+
+                if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AI")
+                {
+                    txtProduct.Text = "PROPAQ";
+                    return;
+                }
+
+                int myNum;
+                if (Int32.TryParse(txtSerial.Text[0].ToString(), out myNum) && txtSerial.Text.Length == 5)
+                {
+                    txtProduct.Text = "AUTOPULSE";
+                    return;
+                }
+                else {
+                    // it is not a number
+                }
+            }
+            else
+            {
+                txtProduct.Text = "";
+            }
+
+        }
+
         private void txtSerial_TextChanged(object sender, EventArgs e)
         {
-                if (txtSerial.Text.Length > 2)
-                {
-                    if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AB")
-                    {
-                        txtProduct.Text = "E-SERIES";
-                        return;
-                    }
-
-                    if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AR")
-                    {
-                        txtProduct.Text = "X-SERIES";
-                        return;
-                    }
-
-                    if (txtSerial.Text[0].ToString() == "T")
-                    {
-                        txtProduct.Text = "M-SERIES";
-                        return;
-                    }
-
-                    if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AF")
-                    {
-                        txtProduct.Text = "R-SERIES";
-                        return;
-                    }
-
-                    if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AA")
-                    {
-                        txtProduct.Text = "AED-PRO";
-                        return;
-                    }
-
-                    if (txtSerial.Text[0].ToString() == "X")
-                    {
-                        txtProduct.Text = "AED-PLUS";
-                        return;
-                    }
-
-                    if (txtSerial.Text[0].ToString() + txtSerial.Text[1].ToString() == "AI")
-                    {
-                        txtProduct.Text = "PROPAQ";
-                        return;
-                    }
-
-                    int myNum;
-                    if (Int32.TryParse(txtSerial.Text[0].ToString(), out myNum) && txtSerial.Text.Length == 5)
-                    {
-                        txtProduct.Text = "AUTOPULSE";
-                        return;
-                    }
-                    else {
-                        // it is not a number
-                    }
-                }
-                else
-                {
-                    txtProduct.Text = "";
-                }
-            
+            PopulateProduct();
         }
 
         private void txtCustNum_TextChanged(object sender, EventArgs e)
@@ -778,7 +791,10 @@ namespace ReceivingApp
                 txtLegs.Visible = true;
                 txtScrews.Visible = true;
                 txtRubberFeet.Visible = true;
-                
+
+                txtLegs.Text = "4";
+                txtScrews.Text = "4";
+                txtRubberFeet.Text = "4";
             }
             else
             {
@@ -814,6 +830,7 @@ namespace ReceivingApp
 
             if (radIncoming.Checked == true)
             {
+                #region Incoming stuff
                 //do incoming stuff
 
                 try
@@ -943,13 +960,13 @@ namespace ReceivingApp
                         i.Visible = false;
                     }
                 }
-
+                #endregion
             }
 
             if (radOutgoing.Checked == true)
             {
                 //Try to check whether or not this is a loaner
-
+                #region Outgoing Function
                 try
                 {
                     /*
@@ -977,6 +994,7 @@ namespace ReceivingApp
                         var accvalues = accline.Split('<');
                         
                         txtSerial.Text = accvalues[0];
+                        PopulateProduct();
 
                         //txtProduct.Text = accvalues[1];
                         txtCustNum.Text = accvalues[2];
@@ -1162,7 +1180,9 @@ namespace ReceivingApp
                         var values = line.Split('<');
 
                         txtSerial.Text = values[0];
-                        txtProduct.Text = values[1];
+                        PopulateProduct();
+
+                        //txtProduct.Text = values[1];
                         txtCustNum.Text = values[2];
                         txtCustName.Text = values[3];
 
@@ -1211,6 +1231,263 @@ namespace ReceivingApp
                 {
                     // do nothing
                 }
+                #endregion
+            }
+
+            if (radEdit.Checked == true)
+            {
+                //Try to check whether or not this is a loaner
+                #region Edit Function
+                try
+                {
+                    
+                    try
+                    {
+                        var reader2 = new StreamReader("T:\\! LOANER SR FOLDERS\\" + txtSR.Text + "\\" + txtSR.Text + "_OutgoingInventory.txt");
+
+                        var accline = reader2.ReadLine();
+
+                        var accvalues = accline.Split('<');
+
+                        txtSerial.Text = accvalues[0];
+                        PopulateProduct();
+
+                        txtCustNum.Text = accvalues[2];
+                        txtCustName.Text = accvalues[3];
+
+                        accline = reader2.ReadLine();
+                        var accvalues2 = accline.Split('<');
+                        chkLoaner.Checked = true;
+
+                        string databinary = accvalues2[0];
+
+                        foreach (CheckBox i in Accessories)
+                        {
+                            i.Checked = false;
+                        }
+
+                        for (int i = 0; i < databinary.Length; i++)
+                        {
+                            if (databinary[i] == '1')
+                            {
+                                Accessories[i].Checked = true;
+                            }
+                        }
+
+                        txtSpO2Cable.Text = accvalues2[1];
+                        if (txtSpO2Cable.Text != "")
+                        {
+                            txtSpO2Cable.Visible = true;
+                            lblSpO2Cable.Visible = true;
+                        }
+
+                        txtSpO2Sensor.Text = accvalues2[2];
+                        if (txtSpO2Sensor.Text != "")
+                        {
+                            txtSpO2Sensor.Visible = true;
+                            lblSpO2Sensor.Visible = true;
+                        }
+
+                        txtEtCO2Sensor.Text = accvalues2[3];
+                        if (txtEtCO2Sensor.Text != "")
+                        {
+                            txtEtCO2Sensor.Visible = true;
+                            lblEtCO2Sensor.Visible = true;
+                        }
+
+                        txtBatterySN1.Text = accvalues2[4];
+                        if (txtBatterySN1.Text != "")
+                        {
+                            txtBatterySN1.Visible = true;
+                            lblBatterySN1.Visible = true;
+                        }
+
+                        txtBatterySN2.Text = accvalues2[5];
+                        if (txtBatterySN2.Text != "")
+                        {
+                            txtBatterySN2.Visible = true;
+                            lblBatterySN2.Visible = true;
+                        }
+
+                        cmbROC.Text = accvalues2[6];
+                        if (cmbROC.Text != "")
+                        {
+                            cmbROC.Visible = true;
+                        }
+
+                        txtPads1.Text = accvalues2[7];
+                        if (txtPads1.Text != "")
+                        {
+                            txtPads1.Visible = true;
+                            lblPads1.Visible = true;
+                        }
+
+                        txtPads2.Text = accvalues2[8];
+                        if (txtPads2.Text != "")
+                        {
+                            txtPads2.Visible = true;
+                            lblPads2.Visible = true;
+                        }
+
+                        txtPaddles.Text = accvalues2[9];
+                        if (txtPaddles.Text != "")
+                        {
+                            txtPaddles.Visible = true;
+                            lblPaddles.Visible = true;
+                        }
+
+                        cmbDataCard.Text = accvalues2[10];
+                        if (cmbDataCard.Text != "")
+                        {
+                            cmbDataCard.Visible = true;
+                        }
+
+                        txtLegs.Text = accvalues2[11];
+                        if (txtLegs.Text != "")
+                        {
+                            txtLegs.Visible = true;
+                            lblLegs.Visible = true;
+                        }
+
+                        txtScrews.Text = accvalues2[12];
+                        if (txtScrews.Text != "")
+                        {
+                            txtScrews.Visible = true;
+                            lblScrews.Visible = true;
+                        }
+
+                        txtRubberFeet.Text = accvalues2[13];
+                        if (txtRubberFeet.Text != "")
+                        {
+                            txtRubberFeet.Visible = true;
+                            lblRubberFeet.Visible = true;
+                        }
+
+                        txtComments.Text = accvalues2[14];
+                        if (txtComments.Text != "")
+                        {
+                            txtComments.Visible = true;
+                            lblComments.Visible = true;
+                        }
+                    }
+                    catch
+                    {
+                        txtSerial.Clear();
+                        txtProduct.Clear();
+                        txtCustNum.Clear();
+                        txtCustName.Clear();
+
+                        txtSerial.Enabled = true;
+                        txtProduct.Enabled = true;
+                        txtCustNum.Enabled = true;
+                        txtCustName.Enabled = true;
+
+                        txtSpO2Cable.Clear();
+                        txtSpO2Sensor.Clear();
+                        txtEtCO2Sensor.Clear();
+                        txtBatterySN1.Clear();
+                        txtBatterySN2.Clear();
+                        txtPads1.Clear();
+                        txtPads2.Clear();
+                        txtPaddles.Clear();
+
+                        /*
+                        txtSpO2Cable.Visible = false;
+                        txtSpO2Sensor.Visible = false;
+                        txtEtCO2Sensor.Visible = false;
+                        txtBatterySN1.Visible = false;
+                        txtBatterySN2.Visible = false;
+                        cmbROC.Visible = false;
+                        txtPads1.Visible = false;
+                        txtPads2.Visible = false;
+                        txtPaddles.Visible = false;
+                        cmbDataCard.Visible = false;
+
+                        lblSpO2Cable.Visible = false;
+                        lblSpO2Sensor.Visible = false;
+                        lblEtCO2Sensor.Visible = false;
+                        lblBatterySN1.Visible = false;
+                        lblBatterySN2.Visible = false;
+                        lblPads1.Visible = false;
+                        lblPads2.Visible = false;
+                        lblPaddles.Visible = false;
+                        */
+                        cmbDataCard.SelectedIndex = -1;
+                        cmbROC.SelectedIndex = -1;
+
+                        foreach (CheckBox i in Accessories)
+                        {
+                            i.Checked = false;
+                        }
+                    }
+
+                    //break;
+                    //}
+                    //}
+                    //reader.Close();
+
+                    //Loaner with that SR was not found, check SR folders
+                    try
+                    {
+
+                        var reader = new StreamReader("T:\\! SR FOLDERS\\" + txtSR.Text + "\\" + txtSR.Text + "_IncomingInventory.txt");
+
+                        var line = reader.ReadLine();
+                        var values = line.Split('<');
+
+                        txtSerial.Text = values[0];
+                        PopulateProduct();
+
+                        //txtProduct.Text = values[1];
+                        txtCustNum.Text = values[2];
+                        txtCustName.Text = values[3];
+
+                        line = reader.ReadLine();
+                        var values2 = line.Split('<');
+
+                        string databinary = values2[0];
+
+                        foreach (CheckBox i in Accessories)
+                        {
+                            i.Checked = false;
+                        }
+
+                        for (int i = 0; i < databinary.Length; i++)
+                        {
+                            if (databinary[i] == '1')
+                            {
+                                Accessories[i].Checked = true;
+                            }
+                        }
+
+                        txtSpO2Cable.Text = values2[1];
+                        txtSpO2Sensor.Text = values2[2];
+                        txtEtCO2Sensor.Text = values2[3];
+                        txtBatterySN1.Text = values2[4];
+                        txtBatterySN2.Text = values2[5];
+                        cmbROC.Text = values2[6];
+                        txtPads1.Text = values2[7];
+                        txtPads2.Text = values2[8];
+                        txtPaddles.Text = values2[9];
+                        cmbDataCard.Text = values2[10];
+
+                        txtLegs.Text = values2[11];
+                        txtScrews.Text = values2[12];
+                        txtRubberFeet.Text = values2[13];
+                        txtComments.Text = values2[14];
+
+                    }
+                    catch
+                    {
+                        // do nothing
+                    }
+
+                }
+                catch
+                {
+                    // do nothing
+                }
+                #endregion
             }
 
         }
@@ -1236,6 +1513,9 @@ namespace ReceivingApp
                 txtCustNum.Enabled = true;
                 txtCustName.Enabled = true;
 
+                lblUser.Visible = true;
+                cmbUser.Visible = true;
+
                 txtSpO2Cable.Clear();
                 txtSpO2Sensor.Clear();
                 txtEtCO2Sensor.Clear();
@@ -1255,6 +1535,12 @@ namespace ReceivingApp
                 txtPads2.Visible = false;
                 txtPaddles.Visible = false;
                 cmbDataCard.Visible = false;
+                txtLegs.Visible = false;
+                lblLegs.Visible = false;
+                txtScrews.Visible = false;
+                lblScrews.Visible = false;
+                txtRubberFeet.Visible = false;
+                lblRubberFeet.Visible = false;
 
                 lblSpO2Cable.Visible = false;
                 lblSpO2Sensor.Visible = false;
@@ -1290,14 +1576,39 @@ namespace ReceivingApp
                 txtCustNum.Enabled = false;
                 txtCustName.Enabled = false;
 
+                lblUser.Visible = true;
+                cmbUser.Visible = true;
+
+                txtSpO2Cable.Visible = false;
+                txtSpO2Sensor.Visible = false;
+                txtEtCO2Sensor.Visible = false;
+                txtBatterySN1.Visible = false;
+                txtBatterySN2.Visible = false;
+                cmbROC.Visible = false;
+                txtPads1.Visible = false;
+                txtPads2.Visible = false;
+                txtPaddles.Visible = false;
+                cmbDataCard.Visible = false;
+                txtLegs.Visible = false;
+                lblLegs.Visible = false;
+                txtScrews.Visible = false;
+                lblScrews.Visible = false;
+                txtRubberFeet.Visible = false;
+                lblRubberFeet.Visible = false;
+
+                lblSpO2Cable.Visible = false;
+                lblSpO2Sensor.Visible = false;
+                lblEtCO2Sensor.Visible = false;
+                lblBatterySN1.Visible = false;
+                lblBatterySN2.Visible = false;
+                lblPads1.Visible = false;
+                lblPads2.Visible = false;
+                lblPaddles.Visible = false;
+
                 foreach (CheckBox i in Accessories)
                 {
                     i.Visible = false;
                 }
-
-                
-
-                   
             }
         }
 
@@ -1377,6 +1688,75 @@ namespace ReceivingApp
                 txtDamageReason.Text = "How?";
                 txtDamageReason.ForeColor = System.Drawing.Color.Gray;
             }
+        }
+
+        private void radEdit_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radEdit.Checked)
+            {
+                ClearForm();
+                grpDamage.Visible = true;
+                grpAcc.Top = 216;
+                grpAcc.Text = "4. Select Accessories";
+                btnGenerate.Text = "Generate";
+                
+                lblUser.Visible = false;
+                cmbUser.Visible = false;
+
+                txtSerial.Enabled = true;
+                txtProduct.Enabled = true;
+                txtCustNum.Enabled = true;
+                txtCustName.Enabled = true;
+
+                txtSpO2Cable.Clear();
+                txtSpO2Sensor.Clear();
+                txtEtCO2Sensor.Clear();
+                txtBatterySN1.Clear();
+                txtBatterySN2.Clear();
+                txtPads1.Clear();
+                txtPads2.Clear();
+                txtPaddles.Clear();
+
+                txtSpO2Cable.Visible = true;
+                txtSpO2Sensor.Visible = true;
+                txtEtCO2Sensor.Visible = true;
+                txtBatterySN1.Visible = true;
+                txtBatterySN2.Visible = true;
+                cmbROC.Visible = true;
+                txtPads1.Visible = true;
+                txtPads2.Visible = true;
+                txtPaddles.Visible = true;
+                cmbDataCard.Visible = true;
+                txtLegs.Visible = true;
+                lblLegs.Visible = true;
+                txtScrews.Visible = true;
+                lblScrews.Visible = true;
+                txtRubberFeet.Visible = true;
+                lblRubberFeet.Visible = true;
+
+                lblSpO2Cable.Visible = true;
+                lblSpO2Sensor.Visible = true;
+                lblEtCO2Sensor.Visible = true;
+                lblBatterySN1.Visible = true;
+                lblBatterySN2.Visible = true;
+                lblPads1.Visible = true;
+                lblPads2.Visible = true;
+                lblPaddles.Visible = true;
+
+                cmbDataCard.SelectedIndex = -1;
+                cmbROC.SelectedIndex = -1;
+
+                foreach (CheckBox i in Accessories)
+                {
+                    i.Visible = true;
+                    i.Checked = false;
+                }
+            }
+        }
+
+        private void checkBox13_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

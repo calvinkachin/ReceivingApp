@@ -42,7 +42,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtSR = new System.Windows.Forms.TextBox();
             this.grpAcc = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblUser = new System.Windows.Forms.Label();
             this.cmbUser = new System.Windows.Forms.ComboBox();
             this.txtComments = new System.Windows.Forms.TextBox();
             this.lblComments = new System.Windows.Forms.Label();
@@ -115,6 +115,7 @@
             this.radDamaged = new System.Windows.Forms.RadioButton();
             this.radUndamaged = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.radEdit = new System.Windows.Forms.RadioButton();
             this.radOutgoing = new System.Windows.Forms.RadioButton();
             this.radIncoming = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
@@ -146,6 +147,7 @@
             // chkLoaner
             // 
             this.chkLoaner.AutoSize = true;
+            this.chkLoaner.Enabled = false;
             this.chkLoaner.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkLoaner.Location = new System.Drawing.Point(106, 49);
             this.chkLoaner.Name = "chkLoaner";
@@ -252,7 +254,7 @@
             // 
             // grpAcc
             // 
-            this.grpAcc.Controls.Add(this.label6);
+            this.grpAcc.Controls.Add(this.lblUser);
             this.grpAcc.Controls.Add(this.cmbUser);
             this.grpAcc.Controls.Add(this.txtComments);
             this.grpAcc.Controls.Add(this.lblComments);
@@ -327,15 +329,15 @@
             this.grpAcc.TabStop = false;
             this.grpAcc.Text = "4. Select Accessories";
             // 
-            // label6
+            // lblUser
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(514, 397);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 16);
-            this.label6.TabIndex = 62;
-            this.label6.Text = "User";
+            this.lblUser.AutoSize = true;
+            this.lblUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUser.Location = new System.Drawing.Point(514, 397);
+            this.lblUser.Name = "lblUser";
+            this.lblUser.Size = new System.Drawing.Size(37, 16);
+            this.lblUser.TabIndex = 62;
+            this.lblUser.Text = "User";
             // 
             // cmbUser
             // 
@@ -927,6 +929,7 @@
             this.checkBox13.TabIndex = 12;
             this.checkBox13.Text = "ECG Cable Extension";
             this.checkBox13.UseVisualStyleBackColor = true;
+            this.checkBox13.CheckedChanged += new System.EventHandler(this.checkBox13_CheckedChanged);
             // 
             // checkBox12
             // 
@@ -1112,6 +1115,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.radEdit);
             this.groupBox4.Controls.Add(this.radOutgoing);
             this.groupBox4.Controls.Add(this.radIncoming);
             this.groupBox4.Location = new System.Drawing.Point(10, 12);
@@ -1121,11 +1125,23 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "1. Incoming/Outgoing";
             // 
+            // radEdit
+            // 
+            this.radEdit.AutoSize = true;
+            this.radEdit.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radEdit.Location = new System.Drawing.Point(405, 19);
+            this.radEdit.Name = "radEdit";
+            this.radEdit.Size = new System.Drawing.Size(55, 24);
+            this.radEdit.TabIndex = 2;
+            this.radEdit.Text = "Edit";
+            this.radEdit.UseVisualStyleBackColor = true;
+            this.radEdit.CheckedChanged += new System.EventHandler(this.radEdit_CheckedChanged);
+            // 
             // radOutgoing
             // 
             this.radOutgoing.AutoSize = true;
             this.radOutgoing.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.radOutgoing.Location = new System.Drawing.Point(488, 19);
+            this.radOutgoing.Location = new System.Drawing.Point(562, 19);
             this.radOutgoing.Name = "radOutgoing";
             this.radOutgoing.Size = new System.Drawing.Size(92, 24);
             this.radOutgoing.TabIndex = 1;
@@ -1138,7 +1154,7 @@
             this.radIncoming.AutoSize = true;
             this.radIncoming.Checked = true;
             this.radIncoming.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.radIncoming.Location = new System.Drawing.Point(255, 19);
+            this.radIncoming.Location = new System.Drawing.Point(201, 19);
             this.radIncoming.Name = "radIncoming";
             this.radIncoming.Size = new System.Drawing.Size(92, 24);
             this.radIncoming.TabIndex = 0;
@@ -1262,8 +1278,9 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.RadioButton radOutgoing;
         private System.Windows.Forms.RadioButton radIncoming;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblUser;
         private System.Windows.Forms.ComboBox cmbUser;
+        private System.Windows.Forms.RadioButton radEdit;
     }
 }
 
